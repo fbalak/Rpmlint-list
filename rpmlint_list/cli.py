@@ -10,8 +10,8 @@ import rpmlint_list
 def main(url):
     """Creates reverse index list from provided URL with XML"""
     error_list = rpmlint_list.get_error_list(url)
-    error_dictionary = rpmlint_list.get_error_dictionary(error_list)
-    click.echo(error_dictionary)
+    error_json = rpmlint_list.get_error_json(error_list)
+    click.echo(error_json)
 
 
 if __name__ == "__main__":
