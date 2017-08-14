@@ -3,14 +3,15 @@
 """Console script for rpmlint_list."""
 
 import click
-
+import rpmlint_list
 
 @click.command()
-def main(args=None):
-    """Console script for rpmlint_list."""
-    click.echo("Replace this message by putting your code into "
-               "rpmlint_list.cli.main")
-    click.echo("See click documentation at http://click.pocoo.org/")
+@click.argument('url')
+def main(url):
+    """Creates reverse index list from provided URL with XML"""
+    error_list = rpmlint_list.get_error_list(url)
+    error_dictionary = rpmlint_list.get_error_dictionary(error_list)
+    click.echo(error_dictionary)
 
 
 if __name__ == "__main__":
