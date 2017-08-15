@@ -1,5 +1,5 @@
 import re
-from urllib.request import urlopen
+import requests
 import xml.etree.ElementTree as ET
 
 
@@ -10,10 +10,11 @@ def get_error_list(url):
     Args:
         url(str): URL where is located xml with report from rpmlint.
     """
-    xml_content = urlopen(url)
+    xml_content = requests.get(url)
+    print(xml_content.text)
     pattern = re.compile("(.*):\s(.:\s.*)")
     error_list = []
-    e = ET.parse(xml_content).getroot()
+    e = ET.fromstring(xml_content.text)
     for test_case in e.findall("testcase"):
         failure = test_case.find('failure')
         if failure is not None:
