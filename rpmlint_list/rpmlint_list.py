@@ -11,7 +11,6 @@ def get_error_list(url):
         url(str): URL where is located xml with report from rpmlint.
     """
     xml_content = requests.get(url)
-    print(xml_content.text)
     pattern = re.compile("(.*):\s(.:\s.*)")
     error_list = []
     e = ET.fromstring(xml_content.text)
@@ -51,7 +50,7 @@ def generate_html_content(error_dictionary):
         ul += "<li>{}<ul>".format(error)
         ul += "</ul><ul>".join(error_dictionary[error])
         ul += "</ul></li>"
-    ul += "/ul>"
+    ul += "</ul>"
     content = """<div>
     {}
     </div>""".format(ul)
