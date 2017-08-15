@@ -45,10 +45,12 @@ def generate_html_content(error_dictionary):
         error_dictionary(dictionary): dictionary where key is rpm package
             and vulues are error messages.
     """
-    ul = "<ul><li>"
+    ul = "<ul>"
     for error in error_dictionary:
-        ul += "</li><li>".join(error_dictionary[error])
-    ul += "</li></ul>"
+        ul += "<li>{}<ul>".format(error)
+        ul += "</ul><ul>".join(error_dictionary[error])
+        ul += "</ul></li>"
+    ul += "/ul>"
     content = """<div>
     {}
     </div>""".format(ul)
