@@ -6,8 +6,10 @@ import click
 import json
 import rpmlint_list
 
+
 @click.command()
-@click.option('--html', '-h', is_flag=True, help='Generates html output for provided XML.')
+@click.option('--html', '-h', is_flag=True,
+              help='Generates html output for provided XML.')
 @click.argument('url')
 def main(html, url):
     """Creates reverse index list from provided URL with XML"""
