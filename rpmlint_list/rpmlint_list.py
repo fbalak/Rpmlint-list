@@ -11,7 +11,7 @@ def get_error_list(url):
         url(str): URL where is located xml with report from rpmlint.
     """
     xml_content = requests.get(url)
-    pattern = re.compile("(.*):\s(.*):\s(.*)[ | | ](.*)")
+    pattern = re.compile("(.*):\s(.):\s([^\s]+)\s(.*)")
     error_list = []
     e = ET.fromstring(xml_content.text)
     for test_case in e.findall("testcase"):
@@ -31,15 +31,15 @@ def get_error_dictionary(error_list):
     """
     error_dictionary = {}
     for error in error_list:
-        if error[2] not in error_dictionary:
-            error_type = "Error" if error[1] == "E" else\
-                "Warning" if error[1] == "W" else error[1]
-            error_dictionary[error[2]] = {
-                "type": error_type,
-                "component": {}}
-        if error[3] not in error_dictionary[error[2]]["component"]:
-            error_dictionary[error[2]]["component"][error[3]] = []
-        error_dictionary[error[2]]["component"][error[3]].append(error[0])
+        error_type = "Error" if error[1] == "E" else\
+            "Warning" if error[1] == "W" else error[1]
+        if error_type not in error_dictionary:
+            error_dictionary[error_type] = {}
+        if error[2] not in error_dictionary[error_type]:
+            error_dictionary[error_type][error[2]] = {}
+        if error[3] not in error_dictionary[error_type][error[2]]:
+            error_dictionary[error_type][error[2]][error[3]] = []
+        error_dictionary[error_type][error[2]][error[3]].append(error[0])
     return error_dictionary
 
 
@@ -57,19 +57,21 @@ class HTMLGenerator:
             obj: dictionary, list or string that is turned into a html.
         """
         if len(obj):
-            self.output += '\n{}<ul>'.format('  ' * indent)
             if type(obj) is dict:
+                self.output += '\n{}<ul>'.format('  ' * indent)
                 for k, v in obj.items():
-                    self.output += '\n{}<li>{}</li>'.format(
+                    self.output += '\n{}<li>{}'.format(
                                     '  ' * (indent+1), k)
-                    self.convert_dictionary(v, indent+1)
+                    self.convert_dictionary(v, indent+2)
+                    self.output += '\n{}</li>'.format(
+                        '  ' * (indent+1))
+                self.output += '\n{}</ul>'.format('  ' * indent)
             elif type(obj) is list:
                 for k, v in enumerate(obj):
                     self.convert_dictionary(v, indent+1)
             elif type(obj) is str:
-                self.output += '\n{}<li>{}</li>'.format(
+                self.output += '\n{}<ul>{}</ul>'.format(
                                     '  ' * (indent+1), obj)
-            self.output += '\n{}</ul>'.format('  ' * indent)
 
     def generate(self):
         """Generates html artefacts containing list of packages and for each
