@@ -73,6 +73,18 @@ class HTMLGenerator:
                 self.output += '\n{}<li>{}</li>'.format(
                                     '  ' * (indent+1), obj)
 
+    def get_html_header(self):
+        return """<html>
+    <head><title>Rpmlint list</title>
+    <script>http://code.stephenmorley.org/javascript/collapsible-lists/CollapsibleLists.js</script>
+    <script>CollapsibleLists.apply();</script>
+    </head>
+    <body>"""
+
+    def get_html_footer(self):
+        return """   </body>
+</html>"""
+
     def generate(self):
         """Generates html artefacts containing list of packages and for each
         package list of errors.
@@ -83,7 +95,9 @@ class HTMLGenerator:
         """
         self.output = ""
         self.convert_dictionary(self.error_dictionary)
-        content = """<ul class="collapsibleList>
+        content = """{}
+        <ul class="collapsibleList">
         {}
-        </ul>""".format(self.output)
+        </ul>
+{}""".format(self.get_html_header(), self.output, self.get_html_footer())
         return content
