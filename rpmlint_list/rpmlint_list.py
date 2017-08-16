@@ -11,7 +11,7 @@ def get_error_list(url):
         url(str): URL where is located xml with report from rpmlint.
     """
     xml_content = requests.get(url)
-    pattern = re.compile("(.*):\s(.:\s.*)")
+    pattern = re.compile("(.*):\s(.*):\s(.*)[ | ](.*)")
     error_list = []
     e = ET.fromstring(xml_content.text)
     for test_case in e.findall("testcase"):
@@ -29,11 +29,18 @@ def get_error_dictionary(error_list):
             package where error happened and second item is
             error message.
     """
+    print(error_list)
     error_dictionary = {}
     for error in error_list:
-        if error[1] not in error_dictionary:
-            error_dictionary[error[1]] = []
-        error_dictionary[error[1]].append(error[0])
+        if error[2] not in error_dictionary:
+            error_type = "Error" if error[1]=="E" else\
+                "Warning" if error[1]=="W" else error[1]
+            error_dictionary[error[2]] = {
+                "type": error_type,
+                "component": {}}
+        if error[3] not in error_dictionary[error[2]]["component"]:
+            error_dictionary[error[2]]["component"][error[3]] = []
+        error_dictionary[error[2]]["component"][error[3]].append(error[0])
     return error_dictionary
 
 
