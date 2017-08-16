@@ -58,19 +58,19 @@ class HTMLGenerator:
         """
         if len(obj):
             if type(obj) is dict:
-                self.output += '\n{}<ul>'.format('  ' * indent)
                 for k, v in obj.items():
                     self.output += '\n{}<li>{}'.format(
                                     '  ' * (indent+1), k)
+                    self.output += '\n{}<ul>'.format('  ' * (indent+1))
                     self.convert_dictionary(v, indent+2)
+                    self.output += '\n{}</ul>'.format('  ' * (indent+1))
                     self.output += '\n{}</li>'.format(
                         '  ' * (indent+1))
-                self.output += '\n{}</ul>'.format('  ' * indent)
             elif type(obj) is list:
                 for k, v in enumerate(obj):
                     self.convert_dictionary(v, indent+1)
             elif type(obj) is str:
-                self.output += '\n{}<ul>{}</ul>'.format(
+                self.output += '\n{}<li>{}</li>'.format(
                                     '  ' * (indent+1), obj)
 
     def generate(self):
@@ -81,8 +81,9 @@ class HTMLGenerator:
             error_dictionary(dictionary): dictionary where key is rpm package
                 and vulues are error messages.
         """
+        self.output = ""
         self.convert_dictionary(self.error_dictionary)
-        content = """<div>
+        content = """<ul class="collapsibleList>
         {}
-        </div>""".format(self.output)
+        </ul>""".format(self.output)
         return content
