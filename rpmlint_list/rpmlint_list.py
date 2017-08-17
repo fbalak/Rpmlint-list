@@ -76,13 +76,14 @@ class HTMLGenerator:
     def get_html_header(self):
         return """<html>
     <head><title>Rpmlint list</title>
-    <script>http://code.stephenmorley.org/javascript/collapsible-lists/CollapsibleLists.js</script>
-    <script>CollapsibleLists.apply();</script>
     </head>
     <body>"""
 
     def get_html_footer(self):
-        return """   </body>
+        return """    <script type='text/javascript' \
+src="js/CollapsibleLists.js"></script>
+    <script>CollapsibleLists.apply()</script>
+    </body>
 </html>"""
 
     def generate(self):
