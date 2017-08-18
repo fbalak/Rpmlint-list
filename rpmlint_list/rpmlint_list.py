@@ -61,7 +61,7 @@ class HTMLGenerator:
                 for k, v in obj.items():
                     if indent == 0:
                         error_type = k
-                    self.output += '\n{}<li>{}'.format(
+                    self.output += '\n{}<li><a href="#">{}</a>'.format(
                                     '  ' * (indent+1), k)
 
                     # Add link to error description
