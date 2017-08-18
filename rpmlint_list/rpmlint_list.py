@@ -61,6 +61,10 @@ class HTMLGenerator:
                 for k, v in obj.items():
                     self.output += '\n{}<li>{}'.format(
                                     '  ' * (indent+1), k)
+                    if indent == 2:
+                        self.output +=\
+                        "<a href='http://wiki.rosalab.ru/en/index.php/\
+Rpmlint_Errors#{}'>details</a>".format(k)
                     self.output += '\n{}<ul>'.format('  ' * (indent+1))
                     self.convert_dictionary(v, indent+2)
                     self.output += '\n{}</ul>'.format('  ' * (indent+1))
