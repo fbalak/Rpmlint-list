@@ -61,14 +61,14 @@ class HTMLGenerator:
                 for k, v in obj.items():
                     if indent == 0:
                         error_type = k
-                    self.output += '\n{}<li><a href="#">{}</a>'.format(
+                    self.output += '\n{}<li><a class="item" href="#">{}</a>'.format(
                                     '  ' * (indent+1), k)
 
                     # Add link to error description
                     if indent == 2 and error_type == "Error":
                         self.output +=\
                         " <a href='http://wiki.rosalab.ru/en/index.php/\
-Rpmlint_Errors#{}'>details</a>".format(k)
+Rpmlint_Errors#{}' target='_blank'>details</a>".format(k)
                     self.output += '\n{}<ul>'.format('  ' * (indent+1))
                     self.convert_dictionary(v, indent+2, error_type)
                     self.output += '\n{}</ul>'.format('  ' * (indent+1))
@@ -84,6 +84,12 @@ Rpmlint_Errors#{}'>details</a>".format(k)
     def get_html_header(self):
         return """<html>
     <head><title>Rpmlint list</title>
+    <style>
+    .item {
+      color: inherit;
+      text-decoration: inherit;
+    }
+    </style>
     </head>
     <body>"""
 
