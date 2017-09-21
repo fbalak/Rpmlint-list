@@ -50,7 +50,7 @@ class HTMLGenerator:
         self.error_dictionary = error_dictionary
         self.output = ""
 
-    def convert_dictionary(self, obj, indent=0, error_type="Warning"):
+    def convert_dictionary_to_list(self, obj, indent=0, error_type="Warning"):
         """Creates recursively html list structure from dictionary/list.
 
         Args:
@@ -70,13 +70,13 @@ class HTMLGenerator:
                         " <a href='http://wiki.rosalab.ru/en/index.php/\
 Rpmlint_Errors#{}' target='_blank'>details</a>".format(k)
                     self.output += '\n{}<ul>'.format('  ' * (indent+1))
-                    self.convert_dictionary(v, indent+2, error_type)
+                    self.convert_dictionary_to_list(v, indent+2, error_type)
                     self.output += '\n{}</ul>'.format('  ' * (indent+1))
                     self.output += '\n{}</li>'.format(
                         '  ' * (indent+1))
             elif type(obj) is list:
                 for k, v in enumerate(obj):
-                    self.convert_dictionary(v, indent+1, error_type)
+                    self.convert_dictionary_to_list(v, indent+1, error_type)
             elif type(obj) is str:
                 self.output += '\n{}<li>{}</li>'.format(
                                     '  ' * (indent+1), obj)
@@ -100,7 +100,7 @@ src="js/CollapsibleLists.js"></script>
     </body>
 </html>"""
 
-    def generate(self):
+    def generate_html_list(self):
         """Generates html artefacts containing list of packages and for each
         package list of errors.
 
@@ -109,10 +109,28 @@ src="js/CollapsibleLists.js"></script>
                 and vulues are error messages.
         """
         self.output = ""
-        self.convert_dictionary(self.error_dictionary)
+        self.convert_dictionary_to_list(self.error_dictionary)
         content = """{}
         <ul class="collapsibleList">
         {}
         </ul>
 {}""".format(self.get_html_header(), self.output, self.get_html_footer())
         return content
+
+    def generate_html_detail(self, error_dictionary):
+        """Generates html artefacts containing table with error or warning
+        details.
+
+        Args:
+            error_dictionary(dictionary): dictionary where key is rpm package
+                and vulues are error messages.
+        """
+        table = self.convert_dictionary_to_table(error_dictionary)
+        self.convert_dictionary(self.error_dictionary)
+        content = """{}
+        <table>
+        {}
+        </table>
+{}""".format(self.get_html_header(), table, self.get_html_footer())
+        return content
+

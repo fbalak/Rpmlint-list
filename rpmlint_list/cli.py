@@ -17,7 +17,7 @@ def main(html, url):
     error_dictionary = rpmlint_list.get_error_dictionary(error_list)
     if html:
         generator = rpmlint_list.HTMLGenerator(error_dictionary)
-        click.echo(generator.generate())
+        click.echo(generator.generate_html_list())
     else:
         click.echo(json.dumps(error_dictionary))
 
