@@ -8,18 +8,24 @@ import rpmlint_list
 
 
 @click.command()
-@click.option('--html', '-h', is_flag=True,
-              help='Generates html output for provided XML.')
+@click.option('--list_format', '-f', default="none",
+              help='Format can be `json`, `html` or `none`. `none`\
+is default.')
+@click.option('--details_path', '-d',
+              help='Path where will be generated web application')
 @click.argument('url')
-def main(html, url):
+def main(list_format, details_path, url):
     """Creates reverse index list from provided URL with XML"""
     error_list = rpmlint_list.get_error_list(url)
     error_dictionary = rpmlint_list.get_error_dictionary(error_list)
-    if html:
+    if list_format == 'html' or details_path:
         generator = rpmlint_list.HTMLGenerator(error_dictionary)
+    if list_format == 'html':
         click.echo(generator.generate_html_list())
-    else:
+    elif list_format == 'json':
         click.echo(json.dumps(error_dictionary))
+    if details_path:
+        generator.generate_details(details_path)
 
 
 if __name__ == "__main__":
