@@ -61,14 +61,16 @@ class HTMLGenerator:
                 for k, v in obj.items():
                     if indent == 0:
                         error_type = k
-                    self.output += '\n{}<li><a class="item" href="#">{}</a>'.format(
+                    self.output +=\
+                        '\n{}<li><a class="item" href="#">{}</a>'.format(
                                     '  ' * (indent+1), k)
 
                     # Add link to error description
                     if indent == 2 and error_type == "Error":
-                        self.output +=\
-                        " <a href='http://wiki.rosalab.ru/en/index.php/\
-Rpmlint_Errors#{}' target='_blank'>details</a>".format(k)
+                        self.output += (
+                                        " <a href='http://wiki.rosalab.ru/en/"
+                                        "index.php/Rpmlint_Errors#{}' target="
+                                        "'_blank'>details</a>".format(k))
                     self.output += '\n{}<ul>'.format('  ' * (indent+1))
                     self.convert_dictionary_to_list(v, indent+2, error_type)
                     self.output += '\n{}</ul>'.format('  ' * (indent+1))
@@ -133,4 +135,3 @@ src="js/CollapsibleLists.js"></script>
         </table>
 {}""".format(self.get_html_header(), table, self.get_html_footer())
         return content
-
