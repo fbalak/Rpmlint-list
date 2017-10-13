@@ -1,4 +1,6 @@
 import re
+import os
+import errno
 import requests
 import xml.etree.ElementTree as ET
 
@@ -119,19 +121,66 @@ src="js/CollapsibleLists.js"></script>
 {}""".format(self.get_html_header(), self.output, self.get_html_footer())
         return content
 
-    def generate_html_detail(self, error_dictionary):
+
+    def convert_dictionary_to_table(self, error_dictionary, error_type, error):
+        """Generate html table with two columns.
+
+        Args:
+            error_dictionary(dictionary): dictionary where key is rpm package
+                and values are error messages.
+        """
+        packages = {}
+        errors = []
+        for detail in error_dictionary.keys():
+            error_detail = "{} {}".format(error, detail)
+            errors.append(error_detail)
+            packages[error_detail] = detail
+        if error_type == "Error":
+            url = "http://wiki.rosalab.ru/en/index.php/Rpmlint_Errors#{}".format(
+                error)
+        else:
+            url = None
+        cells = "<tr><td>Name:</td><td>{}</td></tr>".format(error)
+        cells += "<tr><td>Severity:</td><td>{}</td></tr>".format(error_type)
+        cells += "<tr><td>Details:</td><td>{}</td></tr>".format(errors)
+        if url:
+            cells += "<tr><td>URL:</td><td>{}</td></tr>".format(url)
+
+        table = "<table>{}</table>".format(cells)
+        return table
+
+
+    def generate_detail(self, error_dictionary, error_type, error):
         """Generates html artefacts containing table with error or warning
         details.
 
         Args:
             error_dictionary(dictionary): dictionary where key is rpm package
-                and vulues are error messages.
+                and values are error messages.
         """
-        table = self.convert_dictionary_to_table(error_dictionary)
-        self.convert_dictionary(self.error_dictionary)
+        table = self.convert_dictionary_to_table(error_dictionary, error_type, error)
+        # self.convert_dictionary(self.error_dictionary)
         content = """{}
-        <table>
         {}
-        </table>
 {}""".format(self.get_html_header(), table, self.get_html_footer())
         return content
+
+    def generate_details(self, error_dictionary, path):
+        """Generate html page for each error in error_dictionary on given path.
+
+        Args:
+            error_dictionary(dictionary): dictionary object with information
+                about errors and warnings.
+        """
+        if not os.path.exists(path):
+            raise OSError(2, 'No such file or directory', path)
+            exit(1)
+        for error_type in error_dictionary.keys():
+            for error in error_dictionary[error_type].keys():
+                content = self.generate_detail(error_dictionary[error_type][error], error_type, error)
+
+                directory = os.path.join(path, error_type)
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
+                with open(os.path.join(directory, "{}.html".format(error)), "w+") as f:
+                    f.write(content)

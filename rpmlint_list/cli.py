@@ -25,7 +25,7 @@ def main(list_format, details_path, url):
     elif list_format == 'json':
         click.echo(json.dumps(error_dictionary))
     if details_path:
-        generator.generate_details(details_path)
+        generator.generate_details(error_dictionary, details_path)
 
 
 if __name__ == "__main__":
