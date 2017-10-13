@@ -20,11 +20,18 @@ def get_error_list(url):
         failure = test_case.find('failure')
         if failure is not None:
             error_list += pattern.findall(failure.text)
+    pattern1 = re.compile("^-+$")
+    pattern2 = re.compile("^$")
+    for error_idx in range(len(error_list)):
+        error_list[error_idx] = [
+            pattern2.sub("-", pattern1.sub("-", x)) for
+                x in error_list[error_idx]]
+
     return error_list
 
 
 def get_error_dictionary(error_list):
-    """Creates dictionary where key is rpm package and vulues are error messages.
+    """Creates dictionary where key is rpm package and values are error messages.
 
     Args:
         error_list(list): List of tupples where first where first item is
