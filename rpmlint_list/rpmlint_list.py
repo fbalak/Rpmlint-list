@@ -52,7 +52,8 @@ def get_error_dictionary(error_list, priority_info):
             error_dictionary[error_type][error[2]]["priority"] = 0
         if error[3] not in error_dictionary[error_type][error[2]]["detail"]:
             error_dictionary[error_type][error[2]]["detail"][error[3]] = []
-        error_dictionary[error_type][error[2]]["detail"][error[3]].append(error[0])
+        error_dictionary[error_type][error[2]]["detail"][error[3]].append(
+            error[0])
     return error_dictionary
 
 
@@ -110,6 +111,7 @@ class HTMLGenerator:
                                     '  ' * (indent+1), obj)
 
     def get_html_header(self):
+        """Generate string containing html header."""
         return """<html>
     <head><title>Rpmlint list</title>
     <style>
@@ -121,12 +123,15 @@ class HTMLGenerator:
     </head>
     <body>"""
 
-    def get_html_footer(self):
-        return """    <script type='text/javascript' \
-src="js/CollapsibleLists.js"></script>
-    <script>CollapsibleLists.apply()</script>
+    def get_html_footer(self, scripts=None):
+        """Geenrate string containing html footer.
+
+        Args:
+            scripts(str): String that is put before </body> tag.
+        """
+        return """{}
     </body>
-</html>"""
+</html>""".format(scripts)
 
     def generate_html_list(self):
         """Generates html artefacts containing list of packages and for each
@@ -138,11 +143,15 @@ src="js/CollapsibleLists.js"></script>
         """
         self.output = ""
         self.convert_dictionary_to_list(self.error_dictionary)
+        scripts = """<script type='text/javascript' \
+src="js/CollapsibleLists.js"></script>
+<script>CollapsibleLists.apply()</script>"""
         content = """{}
         <ul class="collapsibleList">
         {}
         </ul>
-{}""".format(self.get_html_header(), self.output, self.get_html_footer())
+{}""".format(
+            self.get_html_header(), self.output, self.get_html_footer(scripts))
         return content
 
     def convert_dictionary_to_table(self, error_dictionary, error_type, error):
@@ -165,7 +174,8 @@ Rpmlint_Errors#{}".format(error)
             url = None
         cells = "<tr><td>Name:</td><td>{}</td></tr>".format(error)
         cells += "<tr><td>Severity:</td><td>{}</td></tr>".format(error_type)
-        cells += "<tr><td>Details:</td><td>{}</td></tr>".format(errors)
+        cells += "<tr><td>Details:</td><td>{}</td></tr>".format(
+            ", ".join(errors))
         if url:
             cells += "<tr><td>URL:</td><td>{}</td></tr>".format(url)
 
@@ -205,7 +215,7 @@ Rpmlint_Errors#{}".format(error)
                 content = self.generate_detail(
                     error_dictionary[error_type][error], error_type, error)
 
-                directory = os.path.join(path, error_type)
+                directory = os.path.join(path, error_type.lower())
                 if not os.path.exists(directory):
                     os.makedirs(directory)
                 with open(
