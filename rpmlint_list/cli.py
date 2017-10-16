@@ -23,7 +23,9 @@ def main(list_format, details_path, priority_path, url):
     else:
         priority_info = None
     error_list = rpmlint_list.get_error_list(url)
-    error_dictionary = rpmlint_list.get_error_dictionary(error_list, priority_info)
+    error_dictionary = rpmlint_list.get_error_dictionary(
+        error_list,
+        priority_info)
     if list_format == 'html' or details_path:
         generator = rpmlint_list.HTMLGenerator(error_dictionary)
     if list_format == 'html':

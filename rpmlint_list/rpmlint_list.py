@@ -1,6 +1,5 @@
 import re
 import os
-import errno
 import requests
 import xml.etree.ElementTree as ET
 
@@ -24,8 +23,8 @@ def get_error_list(url):
     pattern2 = re.compile("^$")
     for error_idx in range(len(error_list)):
         error_list[error_idx] = [
-            pattern2.sub("-", pattern1.sub("-", x)) for
-                x in error_list[error_idx]]
+            pattern2.sub(
+                "-", pattern1.sub("-", x)) for x in error_list[error_idx]]
 
     return error_list
 
@@ -38,8 +37,8 @@ def get_error_dictionary(error_list, priority_info):
         error_list(list): List of tupples where first where first item is
             package where error happened and second item is
             error message.
-        priority_info(list): List of lists containing error name as a first item
-            and its priority as a second item.
+        priority_info(list): List of lists containing error name as a first
+            item and its priority as a second item.
     """
     error_dictionary = {}
     for error in error_list:
@@ -144,7 +143,6 @@ src="js/CollapsibleLists.js"></script>
 {}""".format(self.get_html_header(), self.output, self.get_html_footer())
         return content
 
-
     def convert_dictionary_to_table(self, error_dictionary, error_type, error):
         """Generate html table with two columns.
 
@@ -159,8 +157,8 @@ src="js/CollapsibleLists.js"></script>
             errors.append(error_detail)
             packages[error_detail] = detail
         if error_type == "Error":
-            url = "http://wiki.rosalab.ru/en/index.php/Rpmlint_Errors#{}".format(
-                error)
+            url = "http://wiki.rosalab.ru/en/index.php/\
+Rpmlint_Errors#{}".format(error)
         else:
             url = None
         cells = "<tr><td>Name:</td><td>{}</td></tr>".format(error)
@@ -172,7 +170,6 @@ src="js/CollapsibleLists.js"></script>
         table = "<table>{}</table>".format(cells)
         return table
 
-
     def generate_detail(self, error_dictionary, error_type, error):
         """Generates html artefacts containing table with error or warning
         details.
@@ -181,7 +178,10 @@ src="js/CollapsibleLists.js"></script>
             error_dictionary(dictionary): dictionary where key is rpm package
                 and values are error messages.
         """
-        table = self.convert_dictionary_to_table(error_dictionary, error_type, error)
+        table = self.convert_dictionary_to_table(
+            error_dictionary,
+            error_type,
+            error)
         # self.convert_dictionary(self.error_dictionary)
         content = """{}
         {}
@@ -200,10 +200,13 @@ src="js/CollapsibleLists.js"></script>
             exit(1)
         for error_type in error_dictionary.keys():
             for error in error_dictionary[error_type].keys():
-                content = self.generate_detail(error_dictionary[error_type][error], error_type, error)
+                content = self.generate_detail(
+                    error_dictionary[error_type][error], error_type, error)
 
                 directory = os.path.join(path, error_type)
                 if not os.path.exists(directory):
                     os.makedirs(directory)
-                with open(os.path.join(directory, "{}.html".format(error)), "w+") as f:
+                with open(
+                    os.path.join(
+                        directory, "{}.html".format(error)), "w+") as f:
                     f.write(content)
