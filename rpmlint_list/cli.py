@@ -12,12 +12,18 @@ import rpmlint_list
               help='Format can be `json`, `html` or `none`. `none`\
 is default.')
 @click.option('--details_path', '-d',
-              help='Path where will be generated web application')
+              help='Path where will be generated web application.')
+@click.option('--priority_path', '-p',
+              help='Path with priority configuration.')
 @click.argument('url')
-def main(list_format, details_path, url):
+def main(list_format, details_path, priority_path, url):
     """Creates reverse index list from provided URL with XML"""
+    if priority_path:
+        priority_info = rpmlint_list.get_priority_info(priority_path)
+    else:
+        priority_info = None
     error_list = rpmlint_list.get_error_list(url)
-    error_dictionary = rpmlint_list.get_error_dictionary(error_list)
+    error_dictionary = rpmlint_list.get_error_dictionary(error_list, priority_info)
     if list_format == 'html' or details_path:
         generator = rpmlint_list.HTMLGenerator(error_dictionary)
     if list_format == 'html':

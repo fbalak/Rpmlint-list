@@ -30,13 +30,16 @@ def get_error_list(url):
     return error_list
 
 
-def get_error_dictionary(error_list):
-    """Creates dictionary where key is rpm package and values are error messages.
+def get_error_dictionary(error_list, priority_info):
+    """Creates dictionary where key is rpm package and values are error
+    messages.
 
     Args:
         error_list(list): List of tupples where first where first item is
             package where error happened and second item is
             error message.
+        priority_info(list): List of lists containing error name as a first item
+            and its priority as a second item.
     """
     error_dictionary = {}
     for error in error_list:
@@ -50,6 +53,19 @@ def get_error_dictionary(error_list):
             error_dictionary[error_type][error[2]][error[3]] = []
         error_dictionary[error_type][error[2]][error[3]].append(error[0])
     return error_dictionary
+
+
+def load_priority_info(path):
+    """Loads a list of lists containing error name as a first item and
+    its priority as a second item from configuration file on given path.
+
+    Args:
+        path(str): Path to configuration file.
+    """
+    with open(path) as f:
+        content = f.readlines()
+    content = [x.strip().split(None, 1) for x in content]
+    return content
 
 
 class HTMLGenerator:
