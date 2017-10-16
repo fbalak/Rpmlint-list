@@ -48,9 +48,11 @@ def get_error_dictionary(error_list, priority_info):
             error_dictionary[error_type] = {}
         if error[2] not in error_dictionary[error_type]:
             error_dictionary[error_type][error[2]] = {}
-        if error[3] not in error_dictionary[error_type][error[2]]:
-            error_dictionary[error_type][error[2]][error[3]] = []
-        error_dictionary[error_type][error[2]][error[3]].append(error[0])
+            error_dictionary[error_type][error[2]]["detail"] = {}
+            error_dictionary[error_type][error[2]]["priority"] = 0
+        if error[3] not in error_dictionary[error_type][error[2]]["detail"]:
+            error_dictionary[error_type][error[2]]["detail"][error[3]] = []
+        error_dictionary[error_type][error[2]]["detail"][error[3]].append(error[0])
     return error_dictionary
 
 
@@ -80,7 +82,7 @@ class HTMLGenerator:
         Args:
             obj: dictionary, list or string that is turned into a html.
         """
-        if len(obj):
+        if obj:
             if type(obj) is dict:
                 for k, v in obj.items():
                     if indent == 0:
@@ -152,7 +154,7 @@ src="js/CollapsibleLists.js"></script>
         """
         packages = {}
         errors = []
-        for detail in error_dictionary.keys():
+        for detail in error_dictionary["detail"].keys():
             error_detail = "{} {}".format(error, detail)
             errors.append(error_detail)
             packages[error_detail] = detail
