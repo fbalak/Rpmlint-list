@@ -77,6 +77,14 @@ class HTMLGenerator:
         self.error_dictionary = error_dictionary
         self.output = ""
 
+    def nice_error_format(self, detail_dictionary):
+        """Get Html 2 level list with error details and relevant packages.
+        
+        Args:
+            detail_dictionary(dict): key is error and values are packages.
+        """
+        pass
+
     def convert_dictionary_to_list(self, obj, indent=0, error_type="Warning"):
         """Creates recursively html list structure from dictionary/list.
 
@@ -129,9 +137,12 @@ class HTMLGenerator:
         Args:
             scripts(str): String that is put before </body> tag.
         """
-        return """{}
+        if scripts:
+            return """{}
     </body>
 </html>""".format(scripts)
+        else:
+            return "</body></html>"
 
     def generate_html_list(self):
         """Generates html artefacts containing list of packages and for each
@@ -175,7 +186,7 @@ Rpmlint_Errors#{}".format(error)
         cells = "<tr><td>Name:</td><td>{}</td></tr>".format(error)
         cells += "<tr><td>Severity:</td><td>{}</td></tr>".format(error_type)
         cells += "<tr><td>Details:</td><td>{}</td></tr>".format(
-            ", ".join(errors))
+            ", ".join(self.nice_error_format(errors)))
         if url:
             cells += "<tr><td>URL:</td><td>{}</td></tr>".format(url)
 
@@ -209,7 +220,6 @@ Rpmlint_Errors#{}".format(error)
         """
         if not os.path.exists(path):
             raise OSError(2, 'No such file or directory', path)
-            exit(1)
         for error_type in error_dictionary.keys():
             for error in error_dictionary[error_type].keys():
                 content = self.generate_detail(
@@ -220,5 +230,5 @@ Rpmlint_Errors#{}".format(error)
                     os.makedirs(directory)
                 with open(
                     os.path.join(
-                        directory, "{}.html".format(error)), "w+") as f:
-                    f.write(content)
+                        directory, "{}.html".format(error)), "w+") as file_o:
+                    file_o.write(content)
