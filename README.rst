@@ -18,17 +18,21 @@ Rpmlint list
      :alt: Updates
 
 
-Tool that creates reverse indexes for rpmlint errors.
+Tool that creates reverse indexes for rpmlint errors and presents them in 
+human readable way.
 
-
-* Free software: Apache Software License 2.0
-* Documentation: https://rpmlint-list.readthedocs.io.
-
-
-Features
+Options
 --------
 
-* TODO
+::
+
+    -f, --list_format TEXT      Format can be `json`, `html` or `none`. `none`is
+                                default.
+    -d, --details_path TEXT     Path where will be generated web application.
+    -p, --priority_path TEXT    Path with priority configuration.
+    --help                      Show this message and exit.
+
+* Free software: Apache Software License 2.0
 
 Credits
 ---------
