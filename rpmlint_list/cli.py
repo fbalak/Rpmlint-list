@@ -19,7 +19,7 @@ is default.')
 def main(list_format, details_path, priority_path, url):
     """Creates reverse index list from provided URL with XML"""
     if priority_path:
-        priority_info = rpmlint_list.get_priority_info(priority_path)
+        priority_info = rpmlint_list.load_priority_info(priority_path)
     else:
         priority_info = None
     error_list = rpmlint_list.get_error_list(url)

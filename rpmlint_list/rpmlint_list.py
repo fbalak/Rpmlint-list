@@ -29,7 +29,7 @@ def get_error_list(url):
     return error_list
 
 
-def get_error_dictionary(error_list, priority_info):
+def get_error_dictionary(error_list, priority_info=None):
     """Creates dictionary where key is rpm package and values are error
     messages.
 
@@ -37,8 +37,8 @@ def get_error_dictionary(error_list, priority_info):
         error_list(list): List of tupples where first where first item is
             package where error happened and second item is
             error message.
-        priority_info(list): List of lists containing error name as a first
-            item and its priority as a second item.
+        priority_info(dict): Dictionary with containing error name as a key
+            and its priority as value.
     """
     error_dictionary = {}
     for error in error_list:
@@ -49,7 +49,14 @@ def get_error_dictionary(error_list, priority_info):
         if error[2] not in error_dictionary[error_type]:
             error_dictionary[error_type][error[2]] = {}
             error_dictionary[error_type][error[2]]["detail"] = {}
-            error_dictionary[error_type][error[2]]["priority"] = 0
+            if priority_info:
+                if error[2] in priority_info:
+                    error_dictionary[error_type][error[2]]["priority"] =\
+                        priority_info[error[2]]
+                else:
+                    error_dictionary[error_type][error[2]]["priority"] = 0
+            else:
+                error_dictionary[error_type][error[2]]["priority"] = 0
         if error[3] not in error_dictionary[error_type][error[2]]["detail"]:
             error_dictionary[error_type][error[2]]["detail"][error[3]] = []
         error_dictionary[error_type][error[2]]["detail"][error[3]].append(
@@ -58,16 +65,16 @@ def get_error_dictionary(error_list, priority_info):
 
 
 def load_priority_info(path):
-    """Loads a list of lists containing error name as a first item and
-    its priority as a second item from configuration file on given path.
+    """Loads a dictionary containing error name as a key and its priority
+    as its value from configuration file on given path.
 
     Args:
         path(str): Path to configuration file.
     """
-    with open(path) as f:
-        content = f.readlines()
-    content = [x.strip().split(None, 1) for x in content]
-    return content
+    with open(path) as priority_file:
+        content = priority_file.readlines()
+    configuration = dict(x.strip().split(None, 1) for x in content)
+    return configuration
 
 
 class HTMLGenerator:
