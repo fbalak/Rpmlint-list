@@ -79,11 +79,16 @@ class HTMLGenerator:
 
     def nice_error_format(self, detail_dictionary):
         """Get Html 2 level list with error details and relevant packages.
-        
+
         Args:
             detail_dictionary(dict): key is error and values are packages.
         """
-        pass
+        output = ""
+        for detail in detail_dictionary.keys():
+            output += "<ul>{}<li>".format(detail)
+            output += "</li><li>".join(detail_dictionary[detail])
+            output += "</li></ul>"
+        return output
 
     def convert_dictionary_to_list(self, obj, indent=0, error_type="Warning"):
         """Creates recursively html list structure from dictionary/list.
@@ -177,7 +182,7 @@ src="js/CollapsibleLists.js"></script>
         for detail in error_dictionary["detail"].keys():
             error_detail = "{} {}".format(error, detail)
             errors.append(error_detail)
-            packages[error_detail] = detail
+            packages[error_detail] = error_dictionary["detail"][detail]
         if error_type == "Error":
             url = "http://wiki.rosalab.ru/en/index.php/\
 Rpmlint_Errors#{}".format(error)
@@ -186,7 +191,7 @@ Rpmlint_Errors#{}".format(error)
         cells = "<tr><td>Name:</td><td>{}</td></tr>".format(error)
         cells += "<tr><td>Severity:</td><td>{}</td></tr>".format(error_type)
         cells += "<tr><td>Details:</td><td>{}</td></tr>".format(
-            ", ".join(self.nice_error_format(errors)))
+            self.nice_error_format(packages))
         if url:
             cells += "<tr><td>URL:</td><td>{}</td></tr>".format(url)
 
