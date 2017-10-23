@@ -56,7 +56,7 @@ def get_error_dictionary(error_list, priority_info=None):
                 else:
                     error_dictionary[error_type][error[2]]["priority"] = 0
             else:
-                error_dictionary[error_type][error[2]]["priority"] = 0
+                error_dictionary[error_type][error[2]]["priority"] = None
         if error[3] not in error_dictionary[error_type][error[2]]["detail"]:
             error_dictionary[error_type][error[2]]["detail"][error[3]] = []
         error_dictionary[error_type][error[2]]["detail"][error[3]].append(
@@ -201,6 +201,9 @@ Rpmlint_Errors#{}".format(error)
             self.nice_error_format(packages))
         if url:
             cells += "<tr><td>URL:</td><td>{}</td></tr>".format(url)
+        if error_dictionary["priority"]:
+            cells += "<tr><td>Priority:</td><td>{}</td></tr>".format(
+                error_dictionary["priority"])
 
         table = "<table>{}</table>".format(cells)
         return table
@@ -223,11 +226,20 @@ Rpmlint_Errors#{}".format(error)
 {}""".format(self.get_html_header(), table, self.get_html_footer())
         return content
 
+    def generate_error_list(error_dictionary):
+        """Generate sortable table with errors and their statisctics.
+
+        Args:
+            error_dictionary(dict): dictionary object with information
+                about errors and warnings.
+        """
+        pass
+
     def generate_details(self, error_dictionary, path):
         """Generate html page for each error in error_dictionary on given path.
 
         Args:
-            error_dictionary(dictionary): dictionary object with information
+            error_dictionary(dict): dictionary object with information
                 about errors and warnings.
         """
         if not os.path.exists(path):
