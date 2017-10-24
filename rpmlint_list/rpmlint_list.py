@@ -142,6 +142,9 @@ class HTMLGenerator:
 maximum-scale=1.0; width=device-width;\">
 <link rel=\"stylesheet\" href=\"{}sources/style.css\">
 <script src=\"{}sources/sorttable.js\"></script>
+<style>th{{background-color:#e0e0e0;color:#000;}}
+table{{margin: 50 50 50 50}}
+h1{{margin-left: 50}}</style>
     </head>
     <body>""".format(position, position)
 
@@ -173,7 +176,7 @@ maximum-scale=1.0; width=device-width;\">
                 file_js.write(request_js.text)
 
         request_css = requests.get(
-            "https://codepen.io/alassetter/pen/cyrfB.css")
+            "https://unpkg.com/purecss@1.0.0/build/pure-min.css")
         with open(os.path.join(directory, "style.css"), "w+") as file_css:
                 file_css.write(request_css.text)
 
@@ -227,7 +230,8 @@ CommonRpmlintErrors#{}".format(error)
             cells += "<tr><th>Priority:</th><td>{}</td></tr>".format(
                 error_dictionary["priority"])
 
-        table = "<table>{}</table>".format(cells)
+        table = "<table class=\"pure-table pure-table-horizontal\">{}</table>"\
+                .format(cells)
         return table
 
     def generate_detail(self, error_dictionary, error_type, error):
@@ -258,7 +262,7 @@ CommonRpmlintErrors#{}".format(error)
         output = ""
         for error_severity in error_dictionary.keys():
             output += "<h1>{}</h1>".format(error_severity)
-            output += "<table class=\"sortable\"><thead><tr>"
+            output += "<table class=\"sortable pure-table\"><thead><tr>"
             output += "<th>Name</th><th>Number of packages</th>"
             output += "<th>Priority</th><th>Details</th></thead><tbody>"
             for error in error_dictionary[error_severity].keys():
