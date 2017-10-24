@@ -191,18 +191,19 @@ src="js/CollapsibleLists.js"></script>
             errors.append(error_detail)
             packages[error_detail] = error_dictionary["detail"][detail]
         if error_type == "Error":
-            url = "http://wiki.rosalab.ru/en/index.php/\
-Rpmlint_Errors#{}".format(error)
+            url = "https://fedoraproject.org/wiki/ParagNemade/\
+CommonRpmlintErrors#{}".format(error)
         else:
             url = None
-        cells = "<tr><td>Name:</td><td>{}</td></tr>".format(error)
-        cells += "<tr><td>Severity:</td><td>{}</td></tr>".format(error_type)
-        cells += "<tr><td>Details:</td><td>{}</td></tr>".format(
+        cells = "<tr><th>Name:</th><td>{}</td></tr>".format(error)
+        cells += "<tr><th>Severity:</th><td>{}</td></tr>".format(error_type)
+        cells += "<tr><th>Details:</th><td>{}</td></tr>".format(
             self.nice_error_format(packages))
         if url:
-            cells += "<tr><td>URL:</td><td>{}</td></tr>".format(url)
+            cells += """<tr><th>URL:</th><td><a href=\"{}\">{}</a></td>
+                </tr>""".format(url, url)
         if error_dictionary["priority"]:
-            cells += "<tr><td>Priority:</td><td>{}</td></tr>".format(
+            cells += "<tr><th>Priority:</th><td>{}</td></tr>".format(
                 error_dictionary["priority"])
 
         table = "<table>{}</table>".format(cells)
