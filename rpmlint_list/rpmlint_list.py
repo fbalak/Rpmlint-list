@@ -130,43 +130,20 @@ class HTMLGenerator:
                 self.output += '\n{}<li>{}</li>'.format(
                                     '  ' * (indent+1), obj)
 
-    def get_html_header(self):
-        """Generate string containing html header."""
+    def get_html_header(self, position=""):
+        """Generate string containing html header.
+
+        Args:
+            position(str): relative or absolute position of sources."""
         return """<html>
     <head><title>Rpmlint list</title>
 <meta charset=\"utf-8\" />
 <meta name=\"viewport\" content=\"initial-scale=1.0;
 maximum-scale=1.0; width=device-width;\">
-    <style>
-    .item {
-      color: inherit;
-      text-decoration: inherit;
-    }
-    </style>
-<!--
-Copyright (c) 2017 by alassetter (https://codepen.io/alassetter/pen/cyrfB)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy \
-of this software and associated documentation files (the "Software"), to deal \
-in the Software without restriction, including without limitation the rights  \
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \
-copies of the Software, and to permit persons to whom the Software is \
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in \
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, \
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE \
-SOFTWARE.
--->
-<link rel=\"stylesheet\" href=\"sources/style.css\">
+<link rel=\"stylesheet\" href=\"{}sources/style.css\">
+<script src=\"{}sources/sorttable.js\"></script>
     </head>
-    <body>"""
+    <body>""".format(position, position)
 
     def get_html_footer(self, scripts=None):
         """Geenrate string containing html footer.
@@ -268,7 +245,7 @@ CommonRpmlintErrors#{}".format(error)
         # self.convert_dictionary(self.error_dictionary)
         content = """{}
         {}
-{}""".format(self.get_html_header(), table, self.get_html_footer())
+{}""".format(self.get_html_header("../"), table, self.get_html_footer())
         return content
 
     def generate_error_list(self, error_dictionary):
@@ -315,8 +292,7 @@ CommonRpmlintErrors#{}".format(error)
 
         with open(os.path.join(path, "index.html"), "w+") as file_o:
             file_o.write("{}{}{}".format(
-                self.get_html_header(), tables, self.get_html_footer(
-                    "<script src=\"sources/sorttable.js\"></script>")))
+                self.get_html_header(), tables, self.get_html_footer()))
 
         for error_type in error_dictionary.keys():
             for error in error_dictionary[error_type].keys():
