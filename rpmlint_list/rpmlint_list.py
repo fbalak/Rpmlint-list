@@ -236,7 +236,7 @@ Rpmlint_Errors#{}".format(error)
         output = ""
         for error_severity in error_dictionary.keys():
             output += "<h1>{}</h1>".format(error_severity)
-            output += "<table><thead><tr>"
+            output += "<table class=\"sortable\"><thead><tr>"
             output += "<th>Name</th><th>Number of packages</th>"
             output += "<th>Priority</th><th>Details</th></thead><tbody>"
             for error in error_dictionary[error_severity].keys():
@@ -269,7 +269,9 @@ Rpmlint_Errors#{}".format(error)
 
         with open(os.path.join(path, "index.html"), "w+") as file_o:
             file_o.write("{}{}{}".format(
-                self.get_html_header(), tables, self.get_html_footer()))
+                self.get_html_header(), tables, self.get_html_footer(
+                    "<script src=\"https://kryogenix.org/code/browser/\
+sorttable/sorttable.js\"></script>")))
 
         for error_type in error_dictionary.keys():
             for error in error_dictionary[error_type].keys():
