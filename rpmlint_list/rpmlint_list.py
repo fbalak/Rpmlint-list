@@ -226,14 +226,34 @@ Rpmlint_Errors#{}".format(error)
 {}""".format(self.get_html_header(), table, self.get_html_footer())
         return content
 
-    def generate_error_list(error_dictionary):
+    def generate_error_list(self, error_dictionary):
         """Generate sortable table with errors and their statisctics.
 
         Args:
             error_dictionary(dict): dictionary object with information
                 about errors and warnings.
         """
-        pass
+        output = ""
+        for error_severity in error_dictionary.keys():
+            output += "<h1>{}</h1>".format(error_severity)
+            output += "<table><thead><tr>"
+            output += "<th>Name</th><th>Number of packages</th>"
+            output += "<th>Priority</th><th>Details</th></thead><tbody>"
+            for error in error_dictionary[error_severity].keys():
+                output += "<tr><td>{}</td>".format(error)
+                pkg_count = 0
+                for detail in\
+                        error_dictionary[error_severity][error]["detail"]:
+                    pkg_count += len(error_dictionary[error_severity]
+                                     [error]["detail"][detail])
+                output += "<td>{}</td>".format(pkg_count)
+                output += "<td>{}</td>".format(
+                    error_dictionary[error_severity][error]["priority"])
+                output += "<td><a href='{}/{}.html'>link</a></td>".format(
+                    error_severity.lower(), error)
+                output += "</tr>"
+            output += "</tbody></table>"
+        return output
 
     def generate_details(self, error_dictionary, path):
         """Generate html page for each error in error_dictionary on given path.
@@ -244,6 +264,13 @@ Rpmlint_Errors#{}".format(error)
         """
         if not os.path.exists(path):
             raise OSError(2, 'No such file or directory', path)
+
+        tables = self.generate_error_list(error_dictionary)
+
+        with open(os.path.join(path, "index.html"), "w+") as file_o:
+            file_o.write("{}{}{}".format(
+                self.get_html_header(), tables, self.get_html_footer()))
+
         for error_type in error_dictionary.keys():
             for error in error_dictionary[error_type].keys():
                 content = self.generate_detail(
