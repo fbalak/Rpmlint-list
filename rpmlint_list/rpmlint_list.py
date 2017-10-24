@@ -1,14 +1,6 @@
 import re
 import os
 import requests
-import sys
-if sys.version_info[0] >= 3:
-    from urllib.request import urlretrieve
-else:
-    # Not Python 3 - today, it is most likely to be Python 2
-    # But note that this might need an update when Python 4
-    # might be around one day
-    from urllib import urlretrieve
 import xml.etree.ElementTree as ET
 
 
@@ -195,14 +187,18 @@ SOFTWARE.
         Args:
             directory(str): path to directory with sources.
         """
+        directory = os.path.join(directory, "sources")
         if not os.path.exists(directory):
             os.makedirs(directory)
-        urlretrieve(
-            "https://kryogenix.org/code/browser/sorttable/sorttable.js",
-            os.path.join(directory, "sorttable.js"))
-        urlretrieve(
-            "https://codepen.io/alassetter/pen/cyrfB.css",
-            os.path.join(directory, "style.css"))
+        request_js = requests.get(
+            "https://kryogenix.org/code/browser/sorttable/sorttable.js")
+        with open(os.path.join(directory, "sorttable.js"), "w+") as file_js:
+                file_js.write(request_js.text)
+
+        request_css = requests.get(
+            "https://codepen.io/alassetter/pen/cyrfB.css")
+        with open(os.path.join(directory, "style.css"), "w+") as file_css:
+                file_css.write(request_css.text)
 
     def generate_html_list(self):
         """Generates html artefacts containing list of packages and for each
