@@ -1,6 +1,14 @@
 import re
 import os
 import requests
+import sys
+if sys.version_info[0] >= 3:
+    from urllib.request import urlretrieve
+else:
+    # Not Python 3 - today, it is most likely to be Python 2
+    # But note that this might need an update when Python 4
+    # might be around one day
+    from urllib import urlretrieve
 import xml.etree.ElementTree as ET
 
 
@@ -164,7 +172,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, \
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE \
 SOFTWARE.
 -->
-<link rel=\"stylesheet\" href=\"https://codepen.io/alassetter/pen/cyrfB.css\">
+<link rel=\"stylesheet\" href=\"sources/style.css\">
     </head>
     <body>"""
 
@@ -180,6 +188,21 @@ SOFTWARE.
 </html>""".format(scripts)
         else:
             return "</body></html>"
+
+    def download_sources(self, directory):
+        """Download and save css and js files into directory.
+
+        Args:
+            directory(str): path to directory with sources.
+        """
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        urlretrieve(
+            "https://kryogenix.org/code/browser/sorttable/sorttable.js",
+            os.path.join(directory, "sorttable.js"))
+        urlretrieve(
+            "https://codepen.io/alassetter/pen/cyrfB.css",
+            os.path.join(directory, "style.css"))
 
     def generate_html_list(self):
         """Generates html artefacts containing list of packages and for each
@@ -292,12 +315,12 @@ CommonRpmlintErrors#{}".format(error)
             raise OSError(2, 'No such file or directory', path)
 
         tables = self.generate_error_list(error_dictionary)
+        self.download_sources(path)
 
         with open(os.path.join(path, "index.html"), "w+") as file_o:
             file_o.write("{}{}{}".format(
                 self.get_html_header(), tables, self.get_html_footer(
-                    "<script src=\"https://kryogenix.org/code/browser/\
-sorttable/sorttable.js\"></script>")))
+                    "<script src=\"sources/sorttable.js\"></script>")))
 
         for error_type in error_dictionary.keys():
             for error in error_dictionary[error_type].keys():
