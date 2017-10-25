@@ -92,7 +92,7 @@ class HTMLGenerator:
         """
         output = ""
         for detail in detail_dictionary.keys():
-            output += "<ul><h4>{}</h4><li>".format(detail)
+            output += "<h4>{}</h4><ul><li>".format(detail)
             output += "</li><li>".join(detail_dictionary[detail])
             output += "</li></ul>"
         return output
